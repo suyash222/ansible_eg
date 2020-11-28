@@ -68,10 +68,4 @@
         detach: yes # same as -d
         interactive: no # same -it
         published_ports: '8080:80' #port binding
-        container_default_behavior: "no_defaults" # required to tell that didn't use any default options
-
-
-
-
-
-        
+        container_default_behavior: "no_defaults" # required to tell that didn't use any default
