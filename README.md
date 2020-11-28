@@ -1,2 +1,2 @@
-# ansible_eg
-YML File created for docker eg
+# Ansible eg created for medium blog
+YML File content all the code
