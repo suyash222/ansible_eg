@@ -1,0 +1,77 @@
+- hosts: all # its tell ansible to do the task on all ip present in inventory file
+  tasks: #list of tasks
+    - name: 'Creating directory to mount dvd' # name of the task this is optional you may delete it
+      file: #module used to operate on file and folders
+        path: '/cdrom' #name of the directory
+        state: directory #tell whether its file or folder
+    
+    - name: 'Mounting dvd'
+      ansible.posix.mount: #module used to perform mount related operation
+        path: '/cdrom' # path where we want to mount our dvd
+        src: '/dev/cdrom' # name of the device we want to mount
+        fstype: 'iso9660' # format type of mount 1so9660 is the most common type of format used in disk
+        state: mounted # weather we want to mount or unmount didn't write in quote this is predefine keyword
+
+    - name: 'AppStrem Folder'
+      yum_repository:
+        file: 'dvdrepo' # used to specific file name
+        name: 'dvd1' # used as unique id for each repo
+        baseurl: 'file:///cdrom/AppStream' # path of the repo
+        description: 'Appstream' # description of the repo
+        gpgcheck: no # disabling gpg check
+    
+    - name: 'BaseOS Folder'
+      yum_repository:
+        file: 'dvdrepo' # used to specific file name
+        name: 'dvd2' # used as unique id for each repo
+        baseurl: 'file:///cdrom/BaseOS' # path of the repo
+        description: 'BaseOS' # description of the repo
+        gpgcheck: no # disabling gpg check
+
+    - name: 'Docker Repo'
+      yum_repository:
+        name: 'dockerrepo' # if file name is missing use as a name of the file
+        baseurl: 'https://download.docker.com/linux/centos/7/x86_64/stable' # path of the repo
+        description: 'Docker Repo' # description of the repo
+        gpgcheck: no # disabling gpg check
+
+    - name: 'Installing docker'
+      command: #module used to run command on target node
+        cmd: 'yum install docker-ce --nobest -y' # command to execute
+        warn: no # sometimes ansible throw waring at the time of running command to this option off that waring
+
+    - name: 'Installing Python 3'
+      package: # module used to install and remove package
+        name: 'python3' # name of the package to install
+        state: present # predefine keyword used to install package
+
+    - name: 'Installing Docker API'
+      pip: # used to interact with pip
+        name: 'docker' #name of the package to install
+        state: present
+
+    - name: 'Starting Docker engine'
+      service:
+        name: 'docker'
+        state: started
+    
+    - name: 'Installing image'
+      community.general.docker_image: # module used to manage docker image
+        name: 'httpd'
+        state: present
+        source: pull # tell that pull image for registry
+   
+    - name: 'Starting docker httpd server'
+      community.general.docker_container: # module to manage docker container
+        name: 'ansible'
+        image: 'httpd' # image name form which container is launching
+        detach: yes # same as -d
+        interactive: no # same -it
+        published_ports: '8080:80' #port binding
+        container_default_behavior: "no_defaults" # required to tell that didn't use any default options
+
+
+
+
+
+        
