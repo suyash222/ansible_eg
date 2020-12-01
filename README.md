@@ -1,2 +1,3 @@
 # Ansible eg created for medium blog
 YML File content all the code
+link of medium blog https://suyash98garg.medium.com/docker-and-ansible-a176bae7bc18
